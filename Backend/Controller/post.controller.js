@@ -36,17 +36,37 @@ export const getPost = async (req, res) => {
   }
 };
 
-// export const toggleLike = async (req,res)=>{
-//     try {
-//         const {postId} = req.params;
-//         const userId = req.user.id;
-//         const post = await Post.findById(postId);
+export const toggleLike = async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const userId = req.userId;
 
-//         if(!post){
-//             return res.status(400).json({message:"Post not found"});
-//         }
+    const post = await Post.findById(postId);
 
-//     } catch (error) {
-        
-//     }
-// }
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    const isLiked = post.like.includes(userId);
+
+    if (isLiked) {
+      // remove like
+      post.like.pull(userId);
+    } else {
+      // add like
+      post.like.push(userId);
+    }
+
+    await post.save();
+
+    return res.status(200).json({
+      message: isLiked ? "Post unliked" : "Post liked",
+      likes: post.like.length,
+      post
+    });
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Like error" });
+  }
+};
