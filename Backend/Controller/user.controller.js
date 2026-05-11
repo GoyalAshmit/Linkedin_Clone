@@ -341,3 +341,57 @@ export const getUserProfile = async (req, res) => {
     });
   }
 };
+// SEARCH USERS
+export const searchUsers = async (req, res) => {
+
+  try {
+
+    const keyword = req.query.keyword;
+
+    const users = await User.find({
+
+      $or: [
+
+        {
+          firstName: {
+            $regex: keyword,
+            $options: "i"
+          }
+        },
+
+        {
+          lastName: {
+            $regex: keyword,
+            $options: "i"
+          }
+        },
+
+        {
+          userName: {
+            $regex: keyword,
+            $options: "i"
+          }
+        },
+
+        {
+          headline: {
+            $regex: keyword,
+            $options: "i"
+          }
+        }
+
+      ]
+
+    }).select("-password");
+
+    return res.status(200).json(users);
+
+  } catch (error) {
+
+    console.log(error);
+
+    return res.status(500).json({
+      message: "Search user error"
+    });
+  }
+};

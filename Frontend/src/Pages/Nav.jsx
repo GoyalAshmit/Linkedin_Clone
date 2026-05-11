@@ -20,6 +20,10 @@ function Nav() {
 
     let [search, setSearch] = useState(false);
 
+    let [searchText, setSearchText] = useState("");
+
+    let [searchUsers, setSearchUsers] = useState([]);
+
     let { userData, setUserData } =
         useContext(userDataContext);
 
@@ -59,7 +63,6 @@ function Nav() {
 
         getNotifications()
 
-        // AUTO REFRESH EVERY 5 SECONDS
         const interval = setInterval(() => {
             getNotifications()
         }, 5000)
@@ -88,6 +91,41 @@ function Nav() {
 
         } catch (error) {
             console.log(error)
+        }
+    }
+
+    // SEARCH USERS
+    const handleSearch = async (value) => {
+
+        setSearchText(value)
+
+        if (value.trim() === "") {
+
+            setSearchUsers([])
+
+            return
+        }
+
+        try {
+
+            const res = await axios.get(
+                serverUrl + "/api/user/allusers",
+                { withCredentials: true }
+            )
+
+            const filteredUsers = res.data.filter((user) =>
+
+                `${user.firstName} ${user.lastName}`
+                    .toLowerCase()
+                    .includes(value.toLowerCase())
+            )
+
+            setSearchUsers(filteredUsers)
+
+        } catch (error) {
+
+            console.log(error)
+
         }
     }
 
@@ -130,7 +168,7 @@ function Nav() {
         <div className='w-full bg-white h-[65px] fixed top-0 flex justify-between items-center gap-[3px] px-6 lg:px-40 z-[999]'>
 
             {/* LEFT */}
-            <div className='flex lg:gap-[14px]'>
+            <div className='flex lg:gap-[14px] relative'>
 
                 <div className='mr-[20px] lg:mr-0'>
 
@@ -149,27 +187,89 @@ function Nav() {
                     <FaSearch />
                 </div>
 
-                <form
-                    className={`${!search ? "hidden" : ""}
-                    lg:flex h-[35px] w-[100px] lg:w-[250px]
-                    transition-all focus-within:border-[1.5px]
-                    focus-within:border-black lg:focus-within:w-[400px]
-                    border-[1px] border-gray-400 rounded-2xl px-3`}
-                >
+                {/* SEARCH */}
+                <div className='relative'>
 
-                    <span className='hidden lg:block font-medium mr-3 mt-2'>
+                    <form
+                        className={`${!search ? "hidden" : ""}
+                        lg:flex h-[35px] w-[100px] lg:w-[250px]
+                        transition-all focus-within:border-[1.5px]
+                        focus-within:border-black lg:focus-within:w-[400px]
+                        border-[1px] border-gray-400 rounded-2xl px-3 bg-white`}
+                    >
 
-                        <FaSearch />
+                        <span className='hidden lg:block font-medium mr-3 mt-2'>
 
-                    </span>
+                            <FaSearch />
 
-                    <input
-                        type="text"
-                        className='flex-1 h-full w-[80%] outline-none'
-                        placeholder='Search'
-                    />
+                        </span>
 
-                </form>
+                        <input
+                            type="text"
+                            value={searchText}
+                            onChange={(e) =>
+                                handleSearch(e.target.value)
+                            }
+                            className='flex-1 h-full w-[80%] outline-none'
+                            placeholder='Search users'
+                        />
+
+                    </form>
+
+                    {/* SEARCH RESULTS */}
+                    {
+                        searchUsers.length > 0 && (
+
+                            <div className='absolute top-[45px] left-0 w-[350px] bg-white rounded-xl shadow-2xl max-h-[400px] overflow-y-auto z-[999]'>
+
+                                {
+                                    searchUsers.map((user) => (
+
+                                        <div
+                                            key={user._id}
+                                            onClick={() => {
+
+                                                navigate(`/profile/${user._id}`)
+
+                                                setSearchUsers([])
+
+                                                setSearchText("")
+
+                                            }}
+                                            className='flex items-center gap-3 p-3 hover:bg-gray-100 cursor-pointer border-b'
+                                        >
+
+                                            <img
+                                                src={user.profileImage}
+                                                alt=""
+                                                className='w-[45px] h-[45px] rounded-full object-cover'
+                                            />
+
+                                            <div>
+
+                                                <h1 className='font-semibold'>
+
+                                                    {user.firstName} {user.lastName}
+
+                                                </h1>
+
+                                                <p className='text-sm text-gray-500'>
+
+                                                    {user.headline}
+
+                                                </p>
+
+                                            </div>
+
+                                        </div>
+                                    ))
+                                }
+
+                            </div>
+                        )
+                    }
+
+                </div>
 
             </div>
 
@@ -185,7 +285,7 @@ function Nav() {
                             <div>
 
                                 <img
-                                    className='h-[60px] rounded-full overflow-hidden'
+                                    className='h-[60px] w-[60px] rounded-full object-cover overflow-hidden'
                                     src={userData?.profileImage || null}
                                     alt=""
                                 />
@@ -202,7 +302,12 @@ function Nav() {
 
                             </div>
 
-                            <button className='px-3 py-1 border-[#004182] text-[#004182] active:scale-95 hover:bg-[#004182] hover:text-white w-full border-[1px] cursor-pointer rounded-full'>
+                            <button
+                                onClick={() =>
+                                    navigate(`/profile/${userData?._id}`)
+                                }
+                                className='px-3 py-1 border-[#004182] text-[#004182] active:scale-95 hover:bg-[#004182] hover:text-white w-full border-[1px] cursor-pointer rounded-full'
+                            >
 
                                 View Profile
 
@@ -296,7 +401,6 @@ function Nav() {
 
                     <IoIosNotifications className='text-xl' />
 
-                    {/* RED COUNT */}
                     {
                         unreadCount > 0 && (
 
