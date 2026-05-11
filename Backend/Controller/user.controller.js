@@ -1,9 +1,11 @@
 import { uploadOnCloudinary } from "../Config/cloudinary.js";
 import User from "../models/user.model.js";
+import Notification from "../Models/notification.model.js";
 
 // GET CURRENT USER
 export const getCurrentUser = async (req, res) => {
   try {
+
     let id = req.userId;
 
     const user = await User.findById(id)
@@ -14,16 +16,23 @@ export const getCurrentUser = async (req, res) => {
       );
 
     if (!user) {
-      return res.status(400).json({ message: "No user found!" });
+      return res.status(400).json({
+        message: "No user found!"
+      });
     }
 
     return res.status(200).json(user);
 
   } catch (error) {
+
     console.log(error);
-    return res.status(500).json({ message: "Get current user error" });
+
+    return res.status(500).json({
+      message: "Get current user error"
+    });
   }
 };
+
 
 
 // UPDATE PROFILE
@@ -57,6 +66,7 @@ export const updateProfile = async (req, res) => {
 
     // PROFILE IMAGE
     if (req.files && req.files.profileImage) {
+
       profileImage = await uploadOnCloudinary(
         req.files.profileImage[0].path
       );
@@ -64,6 +74,7 @@ export const updateProfile = async (req, res) => {
 
     // COVER IMAGE
     if (req.files && req.files.coverImage) {
+
       coverImage = await uploadOnCloudinary(
         req.files.coverImage[0].path
       );
@@ -93,7 +104,6 @@ export const updateProfile = async (req, res) => {
         gender,
         experience,
 
-        // keep old image if new image not uploaded
         profileImage:
           profileImage || existingUser.profileImage,
 
@@ -106,7 +116,9 @@ export const updateProfile = async (req, res) => {
     return res.status(200).json(user);
 
   } catch (error) {
+
     console.log(error);
+
     return res.status(500).json({
       message: "Upload server error"
     });
@@ -114,11 +126,13 @@ export const updateProfile = async (req, res) => {
 };
 
 
+
 // SEND CONNECTION REQUEST
 export const sendConnectionRequest = async (req, res) => {
   try {
 
     const senderId = req.userId;
+
     const receiverId = req.params.id;
 
     if (senderId === receiverId) {
@@ -128,6 +142,7 @@ export const sendConnectionRequest = async (req, res) => {
     }
 
     const sender = await User.findById(senderId);
+
     const receiver = await User.findById(receiverId);
 
     if (!receiver) {
@@ -152,16 +167,27 @@ export const sendConnectionRequest = async (req, res) => {
 
     // add request
     sender.sentRequests.push(receiverId);
+
     receiver.connectionRequests.push(senderId);
 
     await sender.save();
+
     await receiver.save();
+
+    // CREATE NOTIFICATION
+    await Notification.create({
+      sender: senderId,
+      receiver: receiverId,
+      type: "request",
+      message: "sent you a connection request",
+    });
 
     return res.status(200).json({
       message: "Connection request sent"
     });
 
   } catch (error) {
+
     console.log(error);
 
     return res.status(500).json({
@@ -171,14 +197,17 @@ export const sendConnectionRequest = async (req, res) => {
 };
 
 
+
 // ACCEPT CONNECTION REQUEST
 export const acceptConnectionRequest = async (req, res) => {
   try {
 
     const currentUserId = req.userId;
+
     const senderId = req.params.id;
 
     const currentUser = await User.findById(currentUserId);
+
     const sender = await User.findById(senderId);
 
     if (!sender) {
@@ -198,13 +227,23 @@ export const acceptConnectionRequest = async (req, res) => {
     sender.connections.push(currentUserId);
 
     await currentUser.save();
+
     await sender.save();
+
+    // CREATE NOTIFICATION
+    await Notification.create({
+      sender: currentUserId,
+      receiver: senderId,
+      type: "accept",
+      message: "accepted your connection request",
+    });
 
     return res.status(200).json({
       message: "Connection request accepted"
     });
 
   } catch (error) {
+
     console.log(error);
 
     return res.status(500).json({
@@ -214,14 +253,17 @@ export const acceptConnectionRequest = async (req, res) => {
 };
 
 
+
 // REMOVE CONNECTION
 export const removeConnection = async (req, res) => {
   try {
 
     const currentUserId = req.userId;
+
     const otherUserId = req.params.id;
 
     const currentUser = await User.findById(currentUserId);
+
     const otherUser = await User.findById(otherUserId);
 
     if (!otherUser) {
@@ -235,6 +277,7 @@ export const removeConnection = async (req, res) => {
     otherUser.connections.pull(currentUserId);
 
     await currentUser.save();
+
     await otherUser.save();
 
     return res.status(200).json({
@@ -242,6 +285,7 @@ export const removeConnection = async (req, res) => {
     });
 
   } catch (error) {
+
     console.log(error);
 
     return res.status(500).json({
@@ -249,6 +293,7 @@ export const removeConnection = async (req, res) => {
     });
   }
 };
+
 
 
 // GET ALL USERS
@@ -262,6 +307,7 @@ export const getAllUsers = async (req, res) => {
     return res.status(200).json(users);
 
   } catch (error) {
+
     console.log(error);
 
     return res.status(500).json({

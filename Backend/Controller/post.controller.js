@@ -1,5 +1,7 @@
 import { uploadOnCloudinary } from "../Config/cloudinary.js";
 import Post from "../Models/post.model.js";
+import User from "../models/user.model.js";
+import Notification from "../Models/notification.model.js";
 
 
 // CREATE POST
@@ -25,6 +27,19 @@ export const createPost = async (req, res) => {
       newPost = await Post.create({
         author: req.userId,
         description,
+      });
+
+    }
+
+    // CREATE NOTIFICATIONS FOR CONNECTIONS
+    const currentUser = await User.findById(req.userId);
+
+    for (let connectionId of currentUser.connections) {
+
+      await Notification.create({
+        sender: req.userId,
+        receiver: connectionId,
+        text: "made a new post",
       });
 
     }
@@ -103,12 +118,10 @@ export const toggleLike = async (req, res) => {
 
     if (isLiked) {
 
-      // REMOVE LIKE
       post.like.pull(userId);
 
     } else {
 
-      // ADD LIKE
       post.like.push(userId);
 
     }
@@ -168,6 +181,17 @@ export const addComment = async (req, res) => {
 
     await post.save();
 
+    // CREATE NOTIFICATION
+    if (post.author.toString() !== req.userId) {
+
+      await Notification.create({
+        sender: req.userId,
+        receiver: post.author,
+        text: "commented on your post",
+      });
+
+    }
+
     const updatedPost = await Post.findById(postId)
 
       .populate(
@@ -220,7 +244,6 @@ export const deleteComment = async (req, res) => {
 
     }
 
-    // ONLY COMMENT OWNER CAN DELETE
     if (comment.user.toString() !== req.userId) {
 
       return res.status(403).json({
@@ -265,7 +288,6 @@ export const deletePost = async (req, res) => {
 
     }
 
-    // ONLY POST OWNER CAN DELETE
     if (post.author.toString() !== req.userId) {
 
       return res.status(403).json({
@@ -310,7 +332,6 @@ export const editPost = async (req, res) => {
 
     }
 
-    // ONLY OWNER CAN EDIT
     if (post.author.toString() !== req.userId) {
 
       return res.status(403).json({
