@@ -8,26 +8,42 @@ import { CiImageOn } from "react-icons/ci";
 import axios from 'axios';
 import { authDataContext } from '../Context/AuthContext';
 import Post from './Post';
+import Users from './Users';
 
 function Home() {
 
-    let { userData, edit, setEdit, posts, getPost } = useContext(userDataContext)
+    let { userData, edit, setEdit, posts, getPost } =
+        useContext(userDataContext)
 
-    let { serverUrl } = useContext(authDataContext);
+    let { serverUrl } =
+        useContext(authDataContext);
 
-    let [frontendImage, setFrontendImage] = useState("");
-    let [backendImage, setBackendImage] = useState("");
-    let [description, setDescription] = useState("");
-    let [uploadPost, setUploadPost] = useState(false);
-    let [posting, setPosting] = useState(false);
+    let [frontendImage, setFrontendImage] =
+        useState("");
+
+    let [backendImage, setBackendImage] =
+        useState("");
+
+    let [description, setDescription] =
+        useState("");
+
+    let [uploadPost, setUploadPost] =
+        useState(false);
+
+    let [posting, setPosting] =
+        useState(false);
 
     let image = useRef()
 
     function handleImage(e) {
+
         let file = e.target.files[0]
 
         setBackendImage(file)
-        setFrontendImage(URL.createObjectURL(file))
+
+        setFrontendImage(
+            URL.createObjectURL(file)
+        )
     }
 
     async function handleUploadPost() {
@@ -38,10 +54,17 @@ function Home() {
 
             let formData = new FormData();
 
-            formData.append("description", description);
+            formData.append(
+                "description",
+                description
+            );
 
             if (backendImage) {
-                formData.append("image", backendImage)
+
+                formData.append(
+                    "image",
+                    backendImage
+                )
             }
 
             let result = await axios.post(
@@ -57,16 +80,20 @@ function Home() {
 
             // RESET
             setPosting(false)
+
             setUploadPost(false);
+
             setDescription("");
+
             setBackendImage("");
+
             setFrontendImage("");
 
         } catch (error) {
 
             console.log(error)
-            setPosting(false)
 
+            setPosting(false)
         }
     }
 
@@ -83,10 +110,13 @@ function Home() {
 
                 <div>
 
+                    {/* BACKGROUND */}
                     <div className='w-full h-full bg-black z-[100] absolute opacity-[0.7]'></div>
 
+                    {/* MODAL */}
                     <div className='p-5 bg-white w-[90%] absolute z-[220] shadow-lg top-[150px] left-[35%] rounded-xl h-[600px] max-w-[400px]'>
 
+                        {/* CLOSE BUTTON */}
                         <div className='absolute top-[20px] right-[20px]'>
 
                             <RxCross1
@@ -112,7 +142,9 @@ function Home() {
                             <div>
 
                                 <h1 className='text-xl font-semibold'>
-                                    {userData.firstName} {userData.lastName}
+
+                                    {userData?.firstName} {userData?.lastName}
+
                                 </h1>
 
                             </div>
@@ -127,17 +159,19 @@ function Home() {
                             onChange={handleImage}
                         />
 
-                        {/* DESCRIPTION */}
+                        {/* TEXTAREA */}
                         <div className='mt-[30px]'>
 
                             <textarea
                                 value={description}
-                                onChange={(e) => setDescription(e.target.value)}
+                                onChange={(e) =>
+                                    setDescription(e.target.value)
+                                }
                                 className='border-[1px] resize-none w-full h-[200px] outline-none p-[10px] text-black rounded-xl overflow-auto'
                                 placeholder='What do you want to talk about?'
                             ></textarea>
 
-                            {/* PREVIEW IMAGE */}
+                            {/* IMAGE PREVIEW */}
                             {frontendImage &&
 
                                 <div className='w-full h-[200px] overflow-hidden border-none outline-none flex justify-center items-center mt-3'>
@@ -187,6 +221,7 @@ function Home() {
 
             }
 
+            {/* MAIN LAYOUT */}
             <div className='w-full px-6 lg:px-40 flex gap-[20px]'>
 
                 {/* LEFT SIDEBAR */}
@@ -220,7 +255,7 @@ function Home() {
 
                     </div>
 
-                    {/* USER DETAILS */}
+                    {/* USER INFO */}
                     <h1 className='pt-10 ml-5 text-xl truncate font-semibold cursor-pointer'>
 
                         {userData?.firstName} {userData?.lastName}
@@ -250,7 +285,7 @@ function Home() {
                 {/* FEED */}
                 <div className='ml-[220px] mt-[104px] w-full lg:w-[50%] min-h-[200px]'>
 
-                    {/* START POST */}
+                    {/* CREATE POST CARD */}
                     <div className='w-full h-[120px] flex items-center justify-center gap-[20px] bg-white shadow-2xl rounded-lg'>
 
                         <div className='w-[50px] h-[50px] rounded-full overflow-hidden flex items-center justify-center cursor-pointer'>
@@ -289,6 +324,13 @@ function Home() {
                         }
 
                     </div>
+
+                </div>
+
+                {/* RIGHT SIDEBAR */}
+                <div className='hidden lg:block w-[300px] mt-[104px]'>
+
+                    <Users />
 
                 </div>
 
