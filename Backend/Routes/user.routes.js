@@ -7,7 +7,8 @@ import {
   sendConnectionRequest,
   acceptConnectionRequest,
   removeConnection,
-  getAllUsers
+  getAllUsers,
+  getUserProfile
 } from "../Controller/user.controller.js";
 
 import upload from "../Middlewares/multer.js";
@@ -59,5 +60,9 @@ userRouter.put(
   isAuth,
   removeConnection
 );
-
+userRouter.get(
+  "/profile/:id",
+  isAuth,
+  getUserProfile
+);
 export default userRouter;

@@ -4,14 +4,19 @@ import axios from "axios";
 import { authDataContext } from "../Context/AuthContext";
 import { userDataContext } from "../Context/UserContext";
 
+import { useNavigate } from "react-router-dom";
+
 function Users() {
 
-  const { serverUrl } = useContext(authDataContext);
+  const { serverUrl } =
+    useContext(authDataContext);
 
   const {
     userData,
     setUserData
   } = useContext(userDataContext);
+
+  const navigate = useNavigate();
 
   const [users, setUsers] = useState([]);
 
@@ -54,7 +59,11 @@ function Users() {
       // INSTANT UI UPDATE
       setUserData((prev) => ({
         ...prev,
-        sentRequests: [...(prev.sentRequests || []), { _id: id }]
+
+        sentRequests: [
+          ...(prev.sentRequests || []),
+          { _id: id }
+        ]
       }));
 
     } catch (error) {
@@ -163,7 +172,12 @@ function Users() {
                 >
 
                   {/* USER INFO */}
-                  <div className="flex items-center gap-3">
+                  <div
+                    onClick={() =>
+                      navigate(`/profile/${user._id}`)
+                    }
+                    className="flex items-center gap-3 cursor-pointer flex-1"
+                  >
 
                     <img
                       src={user.profileImage}
@@ -173,7 +187,7 @@ function Users() {
 
                     <div>
 
-                      <h1 className="font-semibold">
+                      <h1 className="font-semibold hover:underline">
                         {user.firstName} {user.lastName}
                       </h1>
 

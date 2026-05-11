@@ -5,6 +5,7 @@ import Login from './Components/Login'
 import Signup from './Components/Signup'
 import { useContext } from 'react'
 import { userDataContext } from './Context/UserContext'
+import Profile from "./Components/Profile";
 
 function App() {
     let {userData} = useContext(userDataContext);
@@ -13,6 +14,7 @@ function App() {
         <Route path='/' element={ userData?<Home />:<Navigate to="/login" />} />
         <Route path='/login' element={userData?<Navigate to="/" />:<Login />} />
         <Route path='/signup' element= {userData?<Navigate to="/" />:<Signup />} />
+        <Route path="/profile/:id" element={<Profile />} />
     </Routes>
   )
 }
