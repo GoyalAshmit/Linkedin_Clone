@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
+
 import logo1 from "../assets/linkedin.png"
 
 import { FaHome, FaSearch } from "react-icons/fa";
@@ -10,7 +11,10 @@ import { IoIosNotifications } from "react-icons/io";
 import { userDataContext } from '../Context/UserContext';
 import { authDataContext } from '../Context/AuthContext';
 
-import { useLocation, useNavigate } from 'react-router-dom';
+import {
+    useLocation,
+    useNavigate
+} from 'react-router-dom';
 
 import axios from "axios";
 
@@ -28,8 +32,10 @@ function Nav() {
 
     let [searchUsers, setSearchUsers] = useState([]);
 
-    let { userData, setUserData } =
-        useContext(userDataContext);
+    let {
+        userData,
+        setUserData
+    } = useContext(userDataContext);
 
     let { serverUrl } =
         useContext(authDataContext);
@@ -73,32 +79,35 @@ function Nav() {
         try {
 
             let res = await axios.get(
-                serverUrl + "/api/notification/get",
-                { withCredentials: true }
-            )
 
-            setNotifications(res.data)
+                serverUrl + "/api/notification/get",
+
+                { withCredentials: true }
+
+            );
+
+            setNotifications(res.data);
 
         } catch (error) {
 
-            console.log(error)
+            console.log(error);
 
         }
-    }
+    };
 
     useEffect(() => {
 
-        getNotifications()
+        getNotifications();
 
         const interval = setInterval(() => {
 
-            getNotifications()
+            getNotifications();
 
-        }, 5000)
+        }, 5000);
 
-        return () => clearInterval(interval)
+        return () => clearInterval(interval);
 
-    }, [])
+    }, []);
 
     // MARK AS READ
     const markAsRead = async () => {
@@ -106,60 +115,71 @@ function Nav() {
         try {
 
             await axios.put(
+
                 serverUrl + "/api/notification/read",
+
                 {},
+
                 { withCredentials: true }
-            )
+
+            );
 
             setNotifications((prev) =>
+
                 prev.map((n) => ({
+
                     ...n,
-                    isRead: true
+
+                    read: true
+
                 }))
-            )
+            );
 
         } catch (error) {
 
-            console.log(error)
+            console.log(error);
 
         }
-    }
+    };
 
     // SEARCH USERS
     const handleSearch = async (value) => {
 
-        setSearchText(value)
+        setSearchText(value);
 
         if (value.trim() === "") {
 
-            setSearchUsers([])
+            setSearchUsers([]);
 
-            return
+            return;
 
         }
 
         try {
 
             const res = await axios.get(
+
                 serverUrl + "/api/user/allusers",
+
                 { withCredentials: true }
-            )
+
+            );
 
             const filteredUsers = res.data.filter((user) =>
 
                 `${user.firstName} ${user.lastName}`
                     .toLowerCase()
                     .includes(value.toLowerCase())
-            )
+            );
 
-            setSearchUsers(filteredUsers)
+            setSearchUsers(filteredUsers);
 
         } catch (error) {
 
-            console.log(error)
+            console.log(error);
 
         }
-    }
+    };
 
     // LOGOUT
     const handleLogOut = async () => {
@@ -167,20 +187,23 @@ function Nav() {
         try {
 
             await axios.get(
+
                 serverUrl + "/api/auth/logout",
+
                 { withCredentials: true }
-            )
 
-            setUserData(null)
+            );
 
-            navigate("/login")
+            setUserData(null);
+
+            navigate("/login");
 
         } catch (error) {
 
-            console.log(error)
+            console.log(error);
 
         }
-    }
+    };
 
     const navItemClass = (name) => {
 
@@ -189,13 +212,13 @@ function Nav() {
                 ? "border-b-2 border-b-black text-black"
                 : "border-b-2 border-transparent text-gray-600"
             }`
-    }
+    };
 
     // UNREAD COUNT
     const unreadCount =
         notifications.filter(
-            (n) => n.isRead === false
-        ).length
+            (n) => n.read === false
+        ).length;
 
     return (
 
@@ -209,7 +232,7 @@ function Nav() {
                     className='mr-[20px] lg:mr-0 cursor-pointer'
                     onClick={() => {
 
-                        navigate("/")
+                        navigate("/");
 
                     }}
                 >
@@ -222,7 +245,7 @@ function Nav() {
 
                 </div>
 
-                {/* MOBILE SEARCH ICON */}
+                {/* MOBILE SEARCH */}
                 <div
                     className='text-sm mt-2 lg:hidden'
                     onClick={() => setSearch(prev => !prev)}
@@ -274,11 +297,11 @@ function Nav() {
                                             key={user._id}
                                             onClick={() => {
 
-                                                navigate(`/profile/${user._id}`)
+                                                navigate(`/profile/${user._id}`);
 
-                                                setSearchUsers([])
+                                                setSearchUsers([]);
 
-                                                setSearchText("")
+                                                setSearchText("");
 
                                             }}
                                             className='flex items-center gap-3 p-3 hover:bg-gray-100 cursor-pointer border-b'
@@ -321,66 +344,10 @@ function Nav() {
             {/* RIGHT */}
             <div className='flex gap-[7px] lg:gap-[20px] relative'>
 
-                {/* PROFILE MENU */}
-                {
-                    showMenu && (
-
-                        <div className='w-[300px] top-[65px] flex flex-col items-center justify-center rounded-xl right-[0px] bg-white shadow-lg absolute p-[20px] gap-[20px]'>
-
-                            <div>
-
-                                <img
-                                    className='h-[60px] w-[60px] rounded-full object-cover overflow-hidden'
-                                    src={userData?.profileImage || null}
-                                    alt=""
-                                />
-
-                            </div>
-
-                            <div>
-
-                                <h1 className='text-[18px] font-semibold text-gray-700'>
-
-                                    {userData?.firstName} {userData?.lastName}
-
-                                </h1>
-
-                            </div>
-
-                            <button
-                                onClick={() =>
-                                    navigate(`/profile/${userData?._id}`)
-                                }
-                                className='px-3 py-1 border-[#004182] text-[#004182] active:scale-95 hover:bg-[#004182] hover:text-white w-full border-[1px] cursor-pointer rounded-full'
-                            >
-
-                                View Profile
-
-                            </button>
-
-                            <span className='w-full h-[1px] bg-gray-400'></span>
-
-                            <button
-                                onClick={handleLogOut}
-                                className='px-3 py-2 border-red-600 border-[1px] text-red-600 hover:bg-red-600 hover:text-white active:scale-95 cursor-pointer rounded-full w-full'
-                            >
-
-                                Sign Out
-
-                            </button>
-
-                        </div>
-                    )
-                }
-
                 {/* HOME */}
                 <div
-                    className={`${navItemClass("home")} hidden lg:flex flex-col`}
-                    onClick={() => {
-
-                        navigate("/")
-
-                    }}
+                    className={`${navItemClass("home")} hidden lg:flex`}
+                    onClick={() => navigate("/")}
                 >
 
                     <FaHome className='text-xl' />
@@ -391,14 +358,10 @@ function Nav() {
 
                 </div>
 
-                {/* MY NETWORK */}
+                {/* NETWORK */}
                 <div
                     className={`${navItemClass("network")} hidden lg:flex`}
-                    onClick={() => {
-
-                        navigate("/mynetwork")
-
-                    }}
+                    onClick={() => navigate("/mynetwork")}
                 >
 
                     <MdGroups2 className='text-xl' />
@@ -412,11 +375,7 @@ function Nav() {
                 {/* JOBS */}
                 <div
                     className={`${navItemClass("jobs")} hidden lg:flex`}
-                    onClick={() => {
-
-                        navigate("/jobs")
-
-                    }}
+                    onClick={() => navigate("/jobs")}
                 >
 
                     <BsBriefcaseFill className='text-xl' />
@@ -427,14 +386,9 @@ function Nav() {
 
                 </div>
 
-                {/* MESSAGING */}
+                {/* MESSAGE */}
                 <div
                     className={`${navItemClass("messaging")}`}
-                    onClick={() => {
-
-                        setActive("messaging")
-
-                    }}
                 >
 
                     <BsChatLeftDots className='text-xl' />
@@ -452,11 +406,11 @@ function Nav() {
 
                         if (!showNotifications) {
 
-                            await markAsRead()
+                            await markAsRead();
 
                         }
 
-                        setShowNotifications((prev) => !prev)
+                        setShowNotifications((prev) => !prev);
 
                     }}
                 >
@@ -528,7 +482,7 @@ function Nav() {
 
                                                             {" "}
 
-                                                            {item.text}
+                                                            {item.text || "sent you a notification"}
 
                                                         </p>
 
@@ -569,6 +523,58 @@ function Nav() {
                     />
 
                 </div>
+
+                {/* PROFILE MENU */}
+                {
+                    showMenu && (
+
+                        <div className='w-[300px] top-[65px] flex flex-col items-center justify-center rounded-xl right-[0px] bg-white shadow-lg absolute p-[20px] gap-[20px]'>
+
+                            <div>
+
+                                <img
+                                    className='h-[60px] w-[60px] rounded-full object-cover overflow-hidden'
+                                    src={userData?.profileImage || null}
+                                    alt=""
+                                />
+
+                            </div>
+
+                            <div>
+
+                                <h1 className='text-[18px] font-semibold text-gray-700'>
+
+                                    {userData?.firstName} {userData?.lastName}
+
+                                </h1>
+
+                            </div>
+
+                            <button
+                                onClick={() =>
+                                    navigate(`/profile/${userData?._id}`)
+                                }
+                                className='px-3 py-1 border-[#004182] text-[#004182] active:scale-95 hover:bg-[#004182] hover:text-white w-full border-[1px] cursor-pointer rounded-full'
+                            >
+
+                                View Profile
+
+                            </button>
+
+                            <span className='w-full h-[1px] bg-gray-400'></span>
+
+                            <button
+                                onClick={handleLogOut}
+                                className='px-3 py-2 border-red-600 border-[1px] text-red-600 hover:bg-red-600 hover:text-white active:scale-95 cursor-pointer rounded-full w-full'
+                            >
+
+                                Sign Out
+
+                            </button>
+
+                        </div>
+                    )
+                }
 
             </div>
 
