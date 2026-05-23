@@ -9,6 +9,9 @@ import postRouter from "./Routes/post.routes.js";
 import commentRouter from "./Routes/comment.routes.js";
 import notificationRouter from "./Routes/notification.routes.js";
 
+// JOB ROUTER
+import jobRouter from "./Routes/job.routes.js";
+
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
@@ -20,9 +23,11 @@ const app = express();
 // MIDDLEWARES
 app.use(express.json());
 
-app.use(express.urlencoded({
-  extended: true
-}));
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
 
 app.use(cookieParser());
 
@@ -43,17 +48,15 @@ app.use("/api/post", postRouter);
 
 app.use("/api/comment", commentRouter);
 
-app.use(
-  "/api/notification",
-  notificationRouter
-);
+app.use("/api/notification", notificationRouter);
+
+// JOB ROUTES
+app.use("/api/job", jobRouter);
 
 
 // TEST ROUTE
-app.get("/", function (req, res) {
-
-  res.send("Hello");
-
+app.get("/", (req, res) => {
+  res.send("LinkedIn Clone Backend Running");
 });
 
 

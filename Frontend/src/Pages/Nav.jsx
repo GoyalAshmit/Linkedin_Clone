@@ -10,11 +10,15 @@ import { IoIosNotifications } from "react-icons/io";
 import { userDataContext } from '../Context/UserContext';
 import { authDataContext } from '../Context/AuthContext';
 
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import axios from "axios";
 
 function Nav() {
+
+    let navigate = useNavigate();
+
+    let location = useLocation();
 
     const [active, setActive] = useState("home");
 
@@ -30,8 +34,6 @@ function Nav() {
     let { serverUrl } =
         useContext(authDataContext);
 
-    let navigate = useNavigate()
-
     let [showMenu, setShowMenu] =
         useState(false);
 
@@ -41,6 +43,29 @@ function Nav() {
 
     let [showNotifications, setShowNotifications] =
         useState(false);
+
+    // ACTIVE NAVBAR
+    useEffect(() => {
+
+        if (location.pathname === "/") {
+
+            setActive("home");
+
+        }
+
+        else if (location.pathname === "/mynetwork") {
+
+            setActive("network");
+
+        }
+
+        else if (location.pathname === "/jobs") {
+
+            setActive("jobs");
+
+        }
+
+    }, [location.pathname]);
 
     // GET NOTIFICATIONS
     const getNotifications = async () => {
@@ -55,7 +80,9 @@ function Nav() {
             setNotifications(res.data)
 
         } catch (error) {
+
             console.log(error)
+
         }
     }
 
@@ -64,7 +91,9 @@ function Nav() {
         getNotifications()
 
         const interval = setInterval(() => {
+
             getNotifications()
+
         }, 5000)
 
         return () => clearInterval(interval)
@@ -90,7 +119,9 @@ function Nav() {
             )
 
         } catch (error) {
+
             console.log(error)
+
         }
     }
 
@@ -104,6 +135,7 @@ function Nav() {
             setSearchUsers([])
 
             return
+
         }
 
         try {
@@ -144,7 +176,9 @@ function Nav() {
             navigate("/login")
 
         } catch (error) {
+
             console.log(error)
+
         }
     }
 
@@ -170,7 +204,15 @@ function Nav() {
             {/* LEFT */}
             <div className='flex lg:gap-[14px] relative'>
 
-                <div className='mr-[20px] lg:mr-0'>
+                {/* LOGO */}
+                <div
+                    className='mr-[20px] lg:mr-0 cursor-pointer'
+                    onClick={() => {
+
+                        navigate("/")
+
+                    }}
+                >
 
                     <img
                         className='w-[35px]'
@@ -180,11 +222,14 @@ function Nav() {
 
                 </div>
 
+                {/* MOBILE SEARCH ICON */}
                 <div
                     className='text-sm mt-2 lg:hidden'
                     onClick={() => setSearch(prev => !prev)}
                 >
+
                     <FaSearch />
+
                 </div>
 
                 {/* SEARCH */}
@@ -240,7 +285,7 @@ function Nav() {
                                         >
 
                                             <img
-                                                src={user.profileImage}
+                                                src={user.profileImage || null}
                                                 alt=""
                                                 className='w-[45px] h-[45px] rounded-full object-cover'
                                             />
@@ -280,7 +325,7 @@ function Nav() {
                 {
                     showMenu && (
 
-                        <div className='w-[300px] h-[300px] top-[65px] flex flex-col items-center justify-center rounded-xl right-[0px] bg-white shadow-lg absolute p-[20px] gap-[20px]'>
+                        <div className='w-[300px] top-[65px] flex flex-col items-center justify-center rounded-xl right-[0px] bg-white shadow-lg absolute p-[20px] gap-[20px]'>
 
                             <div>
 
@@ -331,7 +376,11 @@ function Nav() {
                 {/* HOME */}
                 <div
                     className={`${navItemClass("home")} hidden lg:flex flex-col`}
-                    onClick={() => setActive("home")}
+                    onClick={() => {
+
+                        navigate("/")
+
+                    }}
                 >
 
                     <FaHome className='text-xl' />
@@ -342,10 +391,14 @@ function Nav() {
 
                 </div>
 
-                {/* NETWORK */}
+                {/* MY NETWORK */}
                 <div
                     className={`${navItemClass("network")} hidden lg:flex`}
-                    onClick={() => setActive("network")}
+                    onClick={() => {
+
+                        navigate("/mynetwork")
+
+                    }}
                 >
 
                     <MdGroups2 className='text-xl' />
@@ -359,7 +412,11 @@ function Nav() {
                 {/* JOBS */}
                 <div
                     className={`${navItemClass("jobs")} hidden lg:flex`}
-                    onClick={() => setActive("jobs")}
+                    onClick={() => {
+
+                        navigate("/jobs")
+
+                    }}
                 >
 
                     <BsBriefcaseFill className='text-xl' />
@@ -370,10 +427,14 @@ function Nav() {
 
                 </div>
 
-                {/* MESSAGE */}
+                {/* MESSAGING */}
                 <div
                     className={`${navItemClass("messaging")}`}
-                    onClick={() => setActive("messaging")}
+                    onClick={() => {
+
+                        setActive("messaging")
+
+                    }}
                 >
 
                     <BsChatLeftDots className='text-xl' />
@@ -389,13 +450,14 @@ function Nav() {
                     className={`${navItemClass("notifications")} relative`}
                     onClick={async () => {
 
-                        setActive("notifications")
-
-                        setShowNotifications(!showNotifications)
-
                         if (!showNotifications) {
+
                             await markAsRead()
+
                         }
+
+                        setShowNotifications((prev) => !prev)
+
                     }}
                 >
 
@@ -448,7 +510,7 @@ function Nav() {
                                                 <div className='flex items-start gap-4'>
 
                                                     <img
-                                                        src={item.sender?.profileImage}
+                                                        src={item.sender?.profileImage || null}
                                                         alt=""
                                                         className='w-[60px] h-[60px] rounded-full object-cover'
                                                     />
@@ -502,7 +564,7 @@ function Nav() {
                             setShowMenu(!showMenu)
                         }
                         className='cursor-pointer h-[43px] w-[43px] rounded-full object-cover overflow-hidden'
-                        src={userData?.profileImage}
+                        src={userData?.profileImage || null}
                         alt=""
                     />
 
