@@ -24,7 +24,7 @@ function Nav() {
 
     let location = useLocation();
 
-    const [active, setActive] = useState("home");
+    const active = location.pathname === "/" ? "home" : location.pathname === "/mynetwork" ? "network" : location.pathname === "/jobs" ? "jobs" : "";
 
     let [search, setSearch] = useState(false);
 
@@ -50,28 +50,7 @@ function Nav() {
     let [showNotifications, setShowNotifications] =
         useState(false);
 
-    // ACTIVE NAVBAR
-    useEffect(() => {
 
-        if (location.pathname === "/") {
-
-            setActive("home");
-
-        }
-
-        else if (location.pathname === "/mynetwork") {
-
-            setActive("network");
-
-        }
-
-        else if (location.pathname === "/jobs") {
-
-            setActive("jobs");
-
-        }
-
-    }, [location.pathname]);
 
     // GET NOTIFICATIONS
     const getNotifications = async () => {

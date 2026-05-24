@@ -13,7 +13,7 @@ function Login() {
     let [loading, setLoading] = useState(false);
     let navigate = useNavigate();
     const { serverUrl } = useContext(authDataContext);
-    let { userData, setUserData } = useContext(userDataContext);
+    let { setUserData } = useContext(userDataContext);
     const handleLogin = async (e) => {
         e.preventDefault();
         setLoading(true);

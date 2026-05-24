@@ -9,7 +9,7 @@ import deafultCP from "../assets/defaultcoverimage.png"
 import { authDataContext } from '../Context/AuthContext';
 import axios from "axios";
 function EditProfile() {
-    let { userData, setUserData, edit, setEdit } = useContext(userDataContext)
+    let { userData, setUserData, setEdit } = useContext(userDataContext)
     let { serverUrl } = useContext(authDataContext)
     let [firstName, setFirstName] = useState(userData?.firstName || "");
     let [lastName, setLastName] = useState(userData?.lastName || "");
@@ -55,17 +55,6 @@ function EditProfile() {
     }
     const handleSubmit = (e) => {
         e.preventDefault();
-        const updateProfile = {
-            firstName,
-            lastName,
-            userName,
-            headline,
-            location,
-            gender,
-            skills,
-            education,
-            experience
-        }
         handleSaveProfile();
     }
     const profileImage = useRef()
@@ -189,7 +178,7 @@ function EditProfile() {
                                 skills.length > 0 && (
                                     <div className='w-full'>
                                         <div className='flex flex-wrap gap-3'></div>
-                                        {skills.map((skill, index) => (
+                                        {skills.map((skill) => (
                                             <div key={skill} className='group relative px-4 py-2 border rounded-xl shadow-sm hover:shadow-md mb-2'>
                                                 {skill}
                                                 <span onClick={() => removeSkill(skill)} className='absolute top-2.5  right-2 hidden group-hover:flex items-center w-5 h-5 justify-center text-gray-600 text-xl cursor-pointer hover:text-red-700'>

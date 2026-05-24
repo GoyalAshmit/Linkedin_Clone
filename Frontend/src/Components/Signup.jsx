@@ -17,8 +17,7 @@ function Signup() {
     let [email,setEmail] = useState("");
     let [password,setPassword] = useState("");
     let [loading,setLoading] = useState(false);
-    let [err,setErr] = useState("")
-    let {userData,setUserData} = useContext(userDataContext);
+    let {setUserData} = useContext(userDataContext);
 
     const handleSignup = async (e)=>{
         e.preventDefault()
@@ -46,7 +45,6 @@ function Signup() {
             setLoading(false)
             // console.log(error)
             toast.error(error.response?.data?.message || "Signup failed");
-            setErr(error.response.data.message)
         }
     }
   return (
