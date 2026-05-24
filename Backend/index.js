@@ -33,7 +33,7 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://linkedin-clone-six-mauve.vercel.app",
     credentials: true,
   })
 );
