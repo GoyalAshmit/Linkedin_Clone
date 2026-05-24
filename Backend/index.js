@@ -32,17 +32,21 @@ app.use(
 app.use(cookieParser());
 
 const allowedOrigins = [
-  "https://linkedin-clone-six-mauve.vercel.app",
-  "http://localhost:5173",
-  "http://localhost:5174",
-  "http://localhost:3000"
+  "https://linkedin-clone-six-mauve.vercel.app"
 ];
 
 app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
-      if (allowedOrigins.indexOf(origin) !== -1 || origin.startsWith("http://localhost:")) {
+      const isLocal = origin.startsWith("http://localhost:") || 
+                      origin.startsWith("http://127.0.0.1:") || 
+                      origin.startsWith("http://192.168.");
+      if (
+        allowedOrigins.indexOf(origin) !== -1 || 
+        isLocal || 
+        process.env.NODE_ENV === "development"
+      ) {
         return callback(null, true);
       }
       return callback(new Error("Not allowed by CORS"));
@@ -79,9 +83,7 @@ app.get("/", (req, res) => {
 const port = process.env.PORT || 8000;
 
 const startServer = async () => {
-
   try {
-
     // CONNECT DATABASE FIRST
     await connectDb();
 
@@ -89,11 +91,10 @@ const startServer = async () => {
     app.listen(port, () => {
       console.log(`Server running on port ${port}`);
     });
-
   } catch (error) {
-
-    console.log("Server Error:", error);
-
+    console.error("CRITICAL: Server failed to start due to Database Connection Error!");
+    console.error("MongoDB Error Details ->", error.message);
+    process.exit(1);
   }
 };
 

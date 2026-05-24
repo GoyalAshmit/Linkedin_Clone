@@ -4,7 +4,7 @@
   "description": "LinkedIn Clone - MERN Stack",
   "scripts": {
     "install-all": "npm install --prefix Backend && npm install --prefix Frontend",
-    "dev:backend": "npm start --prefix Backend",
+    "dev:backend": "npm run dev --prefix Backend",
     "dev:frontend": "npm run dev --prefix Frontend",
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\""
   },
