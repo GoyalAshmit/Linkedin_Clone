@@ -8,6 +8,7 @@ import { FaEdit } from "react-icons/fa";
 import axios from "axios";
 
 import { authDataContext } from "../Context/AuthContext";
+import defaultPP from "../assets/defaultProfile.jpg";
 import { userDataContext } from "../Context/UserContext";
 
 function Post({ post }) {
@@ -154,7 +155,7 @@ function Post({ post }) {
         <div className="flex items-center gap-3">
 
           <img
-            src={post?.author?.profileImage}
+            src={post?.author?.profileImage || defaultPP}
             alt="profile"
             className="w-12 h-12 rounded-full object-cover cursor-pointer"
           />
@@ -304,7 +305,7 @@ function Post({ post }) {
                 <div className="flex items-center gap-2">
 
                   <img
-                    src={c.user?.profileImage}
+                    src={c.user?.profileImage || defaultPP}
                     alt=""
                     className="w-8 h-8 rounded-full object-cover"
                   />

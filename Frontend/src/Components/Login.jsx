@@ -26,8 +26,8 @@ function Login() {
             setEmail("");
             setPassword("")
             setLoading(false)
-            navigate("/");
             setUserData(result.data);
+            navigate("/");
         } catch (error) {
             console.log(error);
             setLoading(false)

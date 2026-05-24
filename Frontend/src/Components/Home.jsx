@@ -9,6 +9,8 @@ import axios from 'axios';
 import { authDataContext } from '../Context/AuthContext';
 import Post from './Post';
 import Users from './Users';
+import defaultPP from '../assets/defaultProfile.jpg';
+import deafultCP from '../assets/defaultcoverimage.png';
 
 function Home() {
 
@@ -133,7 +135,7 @@ function Home() {
 
                                 <img
                                     className='rounded-full object-cover'
-                                    src={userData?.profileImage}
+                                    src={userData?.profileImage || defaultPP}
                                     alt=""
                                 />
 
@@ -232,7 +234,7 @@ function Home() {
 
                         <img
                             className='object-cover w-full h-full'
-                            src={userData?.coverImage || null}
+                            src={userData?.coverImage || deafultCP}
                             alt=""
                         />
 
@@ -249,7 +251,7 @@ function Home() {
 
                         <img
                             className='w-full h-full object-cover'
-                            src={userData?.profileImage || null}
+                            src={userData?.profileImage || defaultPP}
                             alt=""
                         />
 
@@ -292,7 +294,7 @@ function Home() {
 
                             <img
                                 className='object-cover'
-                                src={userData?.profileImage || null}
+                                src={userData?.profileImage || defaultPP}
                                 alt=""
                             />
 

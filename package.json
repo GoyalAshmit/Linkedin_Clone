@@ -1,0 +1,14 @@
+{
+  "name": "linkedin-clone-mern",
+  "version": "1.0.0",
+  "description": "LinkedIn Clone - MERN Stack",
+  "scripts": {
+    "install-all": "npm install --prefix Backend && npm install --prefix Frontend",
+    "dev:backend": "npm start --prefix Backend",
+    "dev:frontend": "npm run dev --prefix Frontend",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\""
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

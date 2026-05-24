@@ -19,8 +19,16 @@ import { userDataContext } from "./Context/UserContext";
 
 function App() {
 
-    let { userData } =
+    let { userData, loading } =
         useContext(userDataContext);
+
+    if (loading) {
+        return (
+            <div className="w-full h-screen flex items-center justify-center bg-[#F4F2EE]">
+                <div className="w-12 h-12 border-4 border-[#0A66C2] border-t-transparent rounded-full animate-spin"></div>
+            </div>
+        );
+    }
 
     return (
 

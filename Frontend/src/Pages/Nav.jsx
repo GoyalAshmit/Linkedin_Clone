@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 
 import logo1 from "../assets/linkedin.png"
+import defaultPP from "../assets/defaultProfile.jpg"
 
 import { FaHome, FaSearch } from "react-icons/fa";
 import { MdGroups2 } from "react-icons/md";
@@ -287,7 +288,7 @@ function Nav() {
                                         >
 
                                             <img
-                                                src={user.profileImage || null}
+                                                src={user.profileImage || defaultPP}
                                                 alt=""
                                                 className='w-[45px] h-[45px] rounded-full object-cover'
                                             />
@@ -443,7 +444,7 @@ function Nav() {
                                                 <div className='flex items-start gap-4'>
 
                                                     <img
-                                                        src={item.sender?.profileImage || null}
+                                                        src={item.sender?.profileImage || defaultPP}
                                                         alt=""
                                                         className='w-[60px] h-[60px] rounded-full object-cover'
                                                     />
@@ -497,7 +498,7 @@ function Nav() {
                             setShowMenu(!showMenu)
                         }
                         className='cursor-pointer h-[43px] w-[43px] rounded-full object-cover overflow-hidden'
-                        src={userData?.profileImage || null}
+                        src={userData?.profileImage || defaultPP}
                         alt=""
                     />
 
@@ -513,7 +514,7 @@ function Nav() {
 
                                 <img
                                     className='h-[60px] w-[60px] rounded-full object-cover overflow-hidden'
-                                    src={userData?.profileImage || null}
+                                    src={userData?.profileImage || defaultPP}
                                     alt=""
                                 />
 

@@ -5,6 +5,7 @@ import { authDataContext } from "../Context/AuthContext";
 import { userDataContext } from "../Context/UserContext";
 
 import { useNavigate } from "react-router-dom";
+import defaultPP from "../assets/defaultProfile.jpg";
 
 function Users() {
 
@@ -180,7 +181,7 @@ function Users() {
                   >
 
                     <img
-                      src={user.profileImage}
+                      src={user.profileImage || defaultPP}
                       alt=""
                       className="w-14 h-14 rounded-full object-cover"
                     />

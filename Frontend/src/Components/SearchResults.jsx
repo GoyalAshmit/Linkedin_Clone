@@ -5,6 +5,7 @@ import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import Nav from "../Pages/Nav";
+import defaultPP from "../assets/defaultProfile.jpg";
 
 import { authDataContext } from "../Context/AuthContext";
 
@@ -87,7 +88,7 @@ function SearchResults() {
                                     >
 
                                         <img
-                                            src={user.profileImage}
+                                            src={user.profileImage || defaultPP}
                                             alt=""
                                             className="w-16 h-16 rounded-full object-cover"
                                         />

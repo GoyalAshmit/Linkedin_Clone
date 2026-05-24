@@ -7,6 +7,7 @@ export const userDataContext = createContext()
 function UserContext({ children }) {
 
     let [userData, setUserData] = useState(null)
+    let [loading, setLoading] = useState(true)
 
     let { serverUrl } =
         useContext(authDataContext)
@@ -32,6 +33,8 @@ function UserContext({ children }) {
             console.log(error)
 
             setUserData(null)
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -69,6 +72,7 @@ function UserContext({ children }) {
 
         userData,
         setUserData,
+        loading,
 
         edit,
         setEdit,

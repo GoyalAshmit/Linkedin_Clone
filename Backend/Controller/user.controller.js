@@ -178,8 +178,7 @@ export const sendConnectionRequest = async (req, res) => {
     await Notification.create({
       sender: senderId,
       receiver: receiverId,
-      type: "request",
-      message: "sent you a connection request",
+      text: "sent you a connection request",
     });
 
     return res.status(200).json({
@@ -234,8 +233,7 @@ export const acceptConnectionRequest = async (req, res) => {
     await Notification.create({
       sender: currentUserId,
       receiver: senderId,
-      type: "accept",
-      message: "accepted your connection request",
+      text: "accepted your connection request",
     });
 
     return res.status(200).json({
@@ -392,6 +390,43 @@ export const searchUsers = async (req, res) => {
 
     return res.status(500).json({
       message: "Search user error"
+    });
+  }
+};
+
+// DECLINE CONNECTION REQUEST
+export const declineConnectionRequest = async (req, res) => {
+  try {
+    const currentUserId = req.userId;
+    const senderId = req.params.id;
+
+    const currentUser = await User.findById(currentUserId);
+    const sender = await User.findById(senderId);
+
+    if (!currentUser || !sender) {
+      return res.status(404).json({
+        message: "User not found"
+      });
+    }
+
+    // Pull request from both sides
+    currentUser.connectionRequests.pull(senderId);
+    sender.sentRequests.pull(currentUserId);
+
+    // Also handle case where current user wants to cancel a sent request
+    currentUser.sentRequests.pull(senderId);
+    sender.connectionRequests.pull(currentUserId);
+
+    await currentUser.save();
+    await sender.save();
+
+    return res.status(200).json({
+      message: "Connection request updated successfully"
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Decline request error"
     });
   }
 };

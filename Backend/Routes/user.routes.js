@@ -9,7 +9,8 @@ import {
   removeConnection,
   getAllUsers,
   getUserProfile,
-  searchUsers
+  searchUsers,
+  declineConnectionRequest
 } from "../Controller/user.controller.js";
 
 import upload from "../Middlewares/multer.js";
@@ -71,4 +72,12 @@ userRouter.get(
   isAuth,
   searchUsers
 );
+
+// DECLINE CONNECTION REQUEST
+userRouter.put(
+  "/decline-request/:id",
+  isAuth,
+  declineConnectionRequest
+);
+
 export default userRouter;

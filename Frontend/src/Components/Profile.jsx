@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 
 import Nav from "../Pages/Nav";
+import defaultPP from "../assets/defaultProfile.jpg";
+import deafultCP from "../assets/defaultcoverimage.png";
 
 import { authDataContext } from "../Context/AuthContext";
 
@@ -70,7 +72,7 @@ function Profile() {
                     <div className="w-full h-[220px] bg-gray-300">
 
                         <img
-                            src={user?.coverImage}
+                            src={user?.coverImage || deafultCP}
                             alt=""
                             className="w-full h-full object-cover"
                         />
@@ -83,7 +85,7 @@ function Profile() {
                         <div className="absolute -top-[60px] w-[120px] h-[120px] rounded-full overflow-hidden border-4 border-white bg-white">
 
                             <img
-                                src={user?.profileImage}
+                                src={user?.profileImage || defaultPP}
                                 alt=""
                                 className="w-full h-full object-cover"
                             />
