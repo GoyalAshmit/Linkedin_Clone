@@ -1,4 +1,4 @@
-import User from "../models/User.js"
+import User from "../Models/User.js"
 
 // SEND REQUEST
 export const sendConnectionRequest = async (req, res) => {

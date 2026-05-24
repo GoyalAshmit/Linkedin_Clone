@@ -1,5 +1,5 @@
 import { uploadOnCloudinary } from "../Config/cloudinary.js";
-import User from "../models/user.model.js";
+import User from "../Models/user.model.js";
 import Notification from "../Models/notification.model.js";
 
 // GET CURRENT USER

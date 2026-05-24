@@ -1,6 +1,6 @@
 import express from "express"
 
-import isAuth from "../middlewares/isAuth.js"
+import isAuth from "../Middlewares/isAuth.js"
 
 import {
     sendConnectionRequest,
